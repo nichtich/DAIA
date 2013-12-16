@@ -13,4 +13,4 @@ requires 'JSON';
 requires 'Pod::Usage';
 requires 'POSIX';
 requires 'Scalar::Util';
-requires 'XML::LibXML';
+requires 'XML::LibXML::Simple';
