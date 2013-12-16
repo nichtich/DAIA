@@ -1,3 +1,4 @@
+requires 'perl', '>= 5.10';
 requires 'Carp';
 requires 'LWP::Simple';
 requires 'Carp::Clan';
