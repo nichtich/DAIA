@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 #ABSTRACT: DAIA command line client
 #PODNAME: daia
+#VERSION
 
 use strict;
 use warnings;

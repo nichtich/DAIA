@@ -1,7 +1,5 @@
-#!perl -Tw
-
 use strict;
-use Test::More qw( no_plan );
+use Test::More;
 use DAIA;
 
 ok( DAIA::is_uri("my:foo"), 'is_uri (1)' );
@@ -57,10 +55,11 @@ sub test_serve {
         my $out1 = $out; $out = '';
 
         unless ( @arg % 2 ) {
-use Data::Dumper; print Dumper(\@arg)."\n";
             $item = item( @arg );
             $item->serve;
             is( $out, $out1, 'serve with hidden parameters' );
         }
     }
 }
+
+done_testing;

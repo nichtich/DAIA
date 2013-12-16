@@ -1,7 +1,5 @@
-#!perl -Tw                                                                                                  
-
 use strict;
-use Test::More qw( no_plan );
+use Test::More;
 use DAIA;
 
 my $item = item();
@@ -109,3 +107,4 @@ my $d = DAIA::Response->new;
 $d->item( $item );
 is_deeply( $d->item, $item );
 
+done_testing;

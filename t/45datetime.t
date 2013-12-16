@@ -1,8 +1,5 @@
-#!perl -Tw
-
 use strict;
-use warnings;
-use Test::More qw( no_plan );
+use Test::More;
 
 use DAIA::Availability qw(parse_duration normalize_duration date_or_datetime);
 
@@ -21,4 +18,4 @@ my %dt2=(
 
 is( date_or_datetime($_), $dt2{$_} ) for (keys %dt2);
 
-1;
+done_testing;

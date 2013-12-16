@@ -2,6 +2,7 @@ use strict;
 use warnings;
 package DAIA::Document;
 #ABSTRACT: Information about a single document
+#VERSION
 
 use base 'DAIA::Object';
 use Carp 'croak';
@@ -15,7 +16,7 @@ our %PROPERTIES = (
     message => $DAIA::Object::COMMON_PROPERTIES{message},
     item    => { 
         type      => 'DAIA::Item', repeatable => 1,
-    }
+    },
 );
 
 sub rdftype { 'http://purl.org/ontology/bibo/Document' }
@@ -99,3 +100,5 @@ Add a specified or a new L<DAIA::Message>.
 =head2 addItem ( $item | %properties )
 
 Add a specified or a new L<DAIA::Item>.
+
+=encoding utf8

@@ -2,6 +2,7 @@ use strict;
 use warnings;
 package DAIA::Availability;
 #ABSTRACT: Abstract base class of availability information
+#VERSION
 
 use base 'DAIA::Object';
 
@@ -385,3 +386,5 @@ sub date_or_datetime {
 }
 
 1;
+
+=encoding utf8

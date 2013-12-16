@@ -2,6 +2,7 @@ use strict;
 use warnings;
 package DAIA::Message;
 #ABSTRACT: An optional information or error message
+#VERSION
 
 use base 'DAIA::Object';
 
@@ -121,4 +122,4 @@ Returns whether $tag is a formally valid language tag. The regular expression
 follows XML Schema type C<xs:language> instead of RFC 3066. For true RFC 3066 
 support have a look at L<I18N::LangTags>.
 
-=cut
+=encoding utf8

@@ -2,8 +2,8 @@ use strict;
 use warnings;
 package DAIA::Object;
 #ABSTRACT: Abstract base class of all DAIA classes
+#VERSION
 
-use strict;
 use Carp::Clan;
 use CGI; # TODO: allow other kind of CGI
 use Data::Validate::URI qw(is_uri is_web_uri);
@@ -470,8 +470,8 @@ sub AUTOLOAD {
 
 =head2 xml_write ( $roottag, $content, $level )
 
-Simple, adopted XML::Simple::XMLOut replacement with support of element order 
-and special treatment of C<label> elements.
+Simple, adopted XMLOut replacement with support of element order and special
+treatment of C<label> elements.
 
 =cut
 
@@ -603,3 +603,5 @@ our %COMMON_PROPERTIES =(
 );
 
 1;
+
+=encoding utf8

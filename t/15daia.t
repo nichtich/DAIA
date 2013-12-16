@@ -1,7 +1,5 @@
-#!perl -Tw
-
 use strict;
-use Test::More qw( no_plan );
+use Test::More;
 use DAIA qw(parse guess);
 
 my $d = parse( file => 't/example.xml' );
@@ -17,6 +15,8 @@ is( DAIA->guess($xml), 'xml', 'guessed DAIA/XML' );
 
 my @f = DAIA->formats;
 ok( scalar (grep { $_ eq 'xml' } @f), 'DAIA->formats' );
+
+done_testing;
 
 __END__
 use Data::Dumper;

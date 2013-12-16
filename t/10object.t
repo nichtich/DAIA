@@ -1,7 +1,5 @@
-#!perl -Tw
-
 use strict;
-use Test::More qw( no_plan );
+use Test::More;
 use DAIA qw(is_uri item);
 
 ok( is_uri("my:foo"), 'exported is_uri (1)' );
@@ -24,3 +22,5 @@ $item = item()->part('broader')->message( ["foo","bar"] );
 $item = DAIA::parse( '{ "item" : { "id" : "my:id" } }' );
 isa_ok( $item, "DAIA::Item" );
 is_deeply( $item->struct, { "id" => "my:id" } );
+
+done_testing;

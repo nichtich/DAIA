@@ -1,5 +1,6 @@
 package DAIA::Item;
 #ABSTRACT: Holds information about an item of a L<DAIA::Document>
+#VERSION
 
 use strict;
 use base 'DAIA::Object';
@@ -227,3 +228,5 @@ sub rdfhash {
 }
 
 1;
+
+=encoding utf8

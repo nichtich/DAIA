@@ -2,6 +2,7 @@ use strict;
 use warnings;
 package DAIA::Entity;
 #ABSTRACT: Abstract base class of Department, Institution, Storage, and Limitation
+#VERSION
 
 use Data::Validate::URI qw(is_uri is_web_uri);
 use base 'DAIA::Object';
@@ -69,3 +70,5 @@ An URL linking to the entity (optional). In RDF this is mapped to the FAOF
 property 'page' (L<http://xmlns.com/foaf/0.1/page>).
 
 =back
+
+=encoding utf8

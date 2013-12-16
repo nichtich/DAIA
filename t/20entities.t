@@ -1,8 +1,5 @@
-#!perl -Tw
-
 use strict;
-use warnings;
-use Test::More qw( no_plan );
+use Test::More;
 
 use DAIA;
 use JSON;
@@ -99,6 +96,8 @@ foreach my $class (keys %entities) {
 my $item = item( department => "foo" );
 my $item2 = item();
 
+done_testing;
+
 __END__
 
 $item2->department( content => "foo" );
@@ -126,3 +125,4 @@ __END__
         $e = $class->new( content => $s );
         is ( $e->json, '{"string":"'. $unicode{$s} . '"}', "UTF-8" );
     }
+

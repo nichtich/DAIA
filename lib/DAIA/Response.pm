@@ -2,6 +2,7 @@ use strict;
 use warnings;
 package DAIA::Response;
 #ABSTRACT: DAIA information root element
+#VERSION
 
 use base 'DAIA::Object';
 
@@ -195,3 +196,5 @@ appends an error message ("please provide a document id" or "document id
 ... is no valid URI") and returns undef.
 
 =cut
+
+=encoding utf8

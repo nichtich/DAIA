@@ -1,8 +1,6 @@
-#!perl -Tw                                                                                                  
-
 use strict;
 use utf8;
-use Test::More qw( no_plan );
+use Test::More;
 use DAIA;
 
 my $d;
@@ -40,3 +38,5 @@ sub json_test {
   my @j = map { s/\s+/ /g; s/\n+$//; s/} /}/g; $_ } @_;
   is ($j[0], $j[1]);
 }
+
+done_testing;

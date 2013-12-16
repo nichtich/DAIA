@@ -1,11 +1,6 @@
-#!perl -Tw
-
 use strict;
-use Test::More qw( no_plan );
-
+use Test::More;
 use DAIA;
-use Data::Dumper;
-
 use DAIA::Available;
 use DAIA::Unavailable;
 
@@ -186,4 +181,4 @@ $a = unavailable('loan');
 $a->expected('P5D');
 #print $a->expected . "\n";
 
-
+done_testing;

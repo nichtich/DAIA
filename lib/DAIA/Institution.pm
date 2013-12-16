@@ -1,7 +1,8 @@
-﻿use strict;
+use strict;
 use warnings;
 package DAIA::Institution;
 #ABSTRACT: Organization that may hold items and provide services
+#VERSION
 
 use base 'DAIA::Entity';
 our %PROPERTIES = %DAIA::Entity::PROPERTIES;
@@ -13,3 +14,5 @@ sub rdftype { 'http://www.w3.org/ns/org#Organization' }
 =head1 DESCRIPTION
 
 See L<DAIA::Entity> which DAIA::Institution is a subclass of.
+
+=encoding utf8

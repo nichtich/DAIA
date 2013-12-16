@@ -1,5 +1,3 @@
-#!perl -Tw   
-
 use strict;
 use utf8;
 use Test::More;
@@ -22,8 +20,7 @@ sub irihash { return { value => iri(shift), type => 'uri' } }
 sub literal { return { value => shift, type => 'literal' } }
 
 sub pdump { eval {
-    use Data::Dumper;
-    my $s = Dumper(shift);
+    my $s = explain(shift);
     $s =~ s/    / /g;
     print $s."\n";
 } }
@@ -42,6 +39,7 @@ $daia->document(id =>'x:y');
 ok( $daia->rdfhash->{'x:y'}, "response with document" );
 
 done_testing;
+
 __END__
 
 # Storage, without URI

@@ -1,7 +1,5 @@
-#!perl -Tw                                                                                                  
-
 use strict;
-use Test::More qw( no_plan );
+use Test::More;
 use DAIA;
 
 my $doc = eval "document()";
@@ -18,3 +16,5 @@ is( scalar @msgs, 2, 'message and add' );
 
 # TODO: attributes: item, href, id
 # TODO: copy constructor, struct, json setting etc.
+
+done_testing;

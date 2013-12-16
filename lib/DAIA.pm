@@ -2,6 +2,7 @@ use strict;
 use warnings;
 package DAIA;
 #ABSTRACT: Document Availability Information API
+#VERSION
 
 # we do not want depend on the following modules
 our ($TRINE_MODEL, $TRINE_SERIALIZER, $RDF_NS, $GRAPHVIZ);
@@ -35,7 +36,7 @@ Exporter::export_tags('all');
 use Carp; # use Carp::Clan; # qw(^DAIA::);
 use IO::File;
 use LWP::Simple qw(get);
-use XML::Simple; # only for parsing (may be changed)
+use XML::LibXML::Simple qw(XMLin);
 use XML::SAX;    # needed for namespace-aware parsing
 
 use DAIA::Response;
@@ -126,59 +127,7 @@ transform DAIA/XML to HTML.
 
 =head2 A DAIA server
 
-It is highly recommended to use L<Plack:App::DAIA> instead of creating a
-DAIA server from scratch. The following example implements a DAIA Server
-without this module.
-
-  use DAIA;
-
-  use CGI;
-  my $id = CGI->new->param('id');
-
-  my $r = response( institution => {
-      href    => "http://example.com/your-institution's-homepage",
-      content => "Your institution's name" 
-  } );
-
-  $r->addMessage("en" => "Not an URI: $id", errno => 1 )
-      unless DAIA::is_uri($id);
-
-  my @holdings = get_holding_information($id);      # your custom method
-
-  if ( @holdings ) {
-      my $doc = document( id => $id, href => "http://example.com/docs/$id" );
-      foreach my $h ( @holdings ) {
-          my $item = item();
-
-          my %stor = get_holding_storage( $h );     # your custom method
-          $item->storage( id => $stor{id}, href => $stor{href}, $stor{name} );
-
-          $item->label( get_holding_label( $h ) );  # your custom method
-          $item->href( get_holding_url( $h ) );     # your custom method
-
-          # add availability services
-          my @services;
-
-          if ( get_holding_is_here( $h ) ) {          # your custom method
-              push @services, available('presentation'), available('loan');
-          } elsif( get_holding_is_not_here( $h ) ) {  # your custom method
-              push @services, # expected to be back in 5 days
-              unavailable( 'presentation', expected => 'P5D' ),
-              unavailable( 'loan', expected => 'P5D' );
-          } else {
-             #  more cases (depending on the complexity of you application)
-          }
-          $item->add( @services );
-      }
-      $r->document( $doc );
-  } else {
-      $r->addMessage( "en" => "No holding information found for id $id" );
-  }
-
-  $r->serve( xslt => "http://path.to/daia.xsl" );
-
-To run your script as CGI, you may have to enable CGI with C<Options +ExecCGI>
-and C<AddHandler cgi-script .pl> in your Apache configuration or in C<.htaccess>.
+See L<Plack:App::DAIA>.
 
 =head1 FUNCTIONS
 
@@ -336,8 +285,7 @@ sub parse {
             #print "IS UTF8?". utf8::is_utf8($from) . "\n";
         }
 
-        my $xml = eval { XMLin( $from, KeepRoot => 1, NSExpand => 1, KeyAttr => [ ] ); };
-        $xml = daia_xml_roots($xml);
+        my $xml = _parse_daia_xml($from);
 
         croak $@ if $@;
         croak "XML does not contain DAIA elements" unless $xml;
@@ -540,13 +488,11 @@ if the return value is true.
 
 my $NSEXPDAIA    = qr/{http:\/\/(ws.gbv.de|purl.org\/ontology)\/daia\/}(.*)/;
 
-# =head1 daia_xml_roots ( $xml )
-#
-# This internal method is passed a hash reference as parsed by L<XML::Simple>
-# and traverses the XML tree to find the first DAIA element(s). It is needed
-# if DAIA/XML is wrapped in other XML structures.
-#
-# =cut
+sub _parse_daia_xml {
+    my ($from) = @_;
+    my $xml = eval { XMLin( $from, KeepRoot => 1, NSExpand => 1, KeyAttr => [ ], NormalizeSpace => 2 ); };
+    daia_xml_roots($xml);
+}
 
 sub daia_xml_roots {
     my $xml = shift; # hash reference
@@ -584,7 +530,7 @@ sub daia_xml_roots {
     return $out;
 }
 
-# filter out non DAIA XML elements and 'xmlns' attributes
+# filter out non DAIA XML elements, 'xmlns' attributes and empty values
 sub _filter_xml { 
     my $xml = shift;
     map { _filter_xml($_) } @$xml if ref($xml) eq 'ARRAY';
@@ -592,13 +538,14 @@ sub _filter_xml {
 
     my (@del,%add);
     foreach my $key (keys %$xml) {
+        my $value = $xml->{$key};
         if ($key =~ /^{([^}]*)}(.*)/) {
             my $local = $2;
-            if ($1 =~ /^http:\/\/(ws.gbv.de|purl.org\/ontology)\/daia\/$/) {
+            if ($1 =~ /^http:\/\/(ws.gbv.de|purl.org\/ontology)\/daia\/$/ and $value ne '') {
                 $xml->{$local} = $xml->{$key};
             }
             push @del, $key;
-        } elsif ($key =~ /^xmlns/ or $key =~ /:/) {
+        } elsif ($key =~ /^xmlns/ or $key =~ /:/ or $value eq '') {
             push @del, $key;
         }
     }
@@ -611,3 +558,5 @@ sub _filter_xml {
 }
 
 1;
+
+=encoding utf8

@@ -1,4 +1,7 @@
-0.41 2012-01-09
+0.43 2013-12-16
+      - simplified XML (DAIA/XML must not be embedded)
+      - cleanup
+0.42 2012-01-09
       - fixed dependencies
 0.41 2012-01-06
       - fixed bugs on empty label and missing institution

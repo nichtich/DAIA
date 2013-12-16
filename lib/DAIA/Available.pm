@@ -2,6 +2,7 @@ use strict;
 use warnings;
 package DAIA::Available;
 #ABSTRACT: Information about a service that is currently unavailable
+#VERSION
 
 use base 'DAIA::Availability';
 
@@ -47,3 +48,5 @@ delay as L<DateTime::Duration> object, use the C<parse_duration>
 function that can be exported on request.
 
 =back
+
+=encoding utf8

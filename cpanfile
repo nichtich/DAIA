@@ -1,0 +1,16 @@
+requires 'Carp';
+requires 'LWP::Simple';
+requires 'Carp::Clan';
+requires 'CGI';
+requires 'Data::Validate::URI';
+requires 'DateTime';
+requires 'DateTime::Duration';
+requires 'DateTime::Format::Duration';
+requires 'Getopt::Long';
+requires 'IO::File';
+requires 'IO::Scalar';
+requires 'JSON';
+requires 'Pod::Usage';
+requires 'POSIX';
+requires 'Scalar::Util';
+requires 'XML::LibXML';

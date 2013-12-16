@@ -2,6 +2,7 @@ use strict;
 use warnings;
 package DAIA::Unavailable;
 #ABSTRACT: Information about a service that is currently unavailable
+#VERSION
 
 use base 'DAIA::Availability';
 use DateTime;
@@ -68,3 +69,5 @@ or the special value "unknown". If no period (nor "unknown") is given, the servi
 probably won't be available in the future.
 
 =back
+
+=encoding utf8

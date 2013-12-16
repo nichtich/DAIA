@@ -2,6 +2,7 @@ use strict;
 use warnings;
 package DAIA::Storage;
 #ABSTRACT: Information about the place where an item is stored
+#VERSION
 
 use base 'DAIA::Entity';
 our %PROPERTIES = %DAIA::Entity::PROPERTIES;
@@ -13,3 +14,5 @@ sub rdftype { 'http://purl.org/ontology/daia/Storage' }
 =head1 DESCRIPTION
 
 See L<DAIA::Entity> which DAIA::Storage is a subclass of.
+
+=encoding utf8
