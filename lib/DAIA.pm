@@ -30,14 +30,13 @@ our %EXPORT_TAGS = (
 );
 our @EXPORT_OK = qw(is_uri parse guess);
 Exporter::export_ok_tags;
-$EXPORT_TAGS{all} = [@EXPORT_OK, 'message', 'serve'];
+$EXPORT_TAGS{all} = [@EXPORT_OK, 'message'];
 Exporter::export_tags('all');
 
 use Carp; # use Carp::Clan; # qw(^DAIA::);
 use IO::File;
-use LWP::Simple qw(get);
+use LWP::Simple ();
 use XML::LibXML::Simple qw(XMLin);
-use XML::SAX;    # needed for namespace-aware parsing
 
 use DAIA::Response;
 use DAIA::Document;
@@ -135,7 +134,6 @@ By default constructor functions are exported for all objects.
 To disable exporting, include DAIA like this:
 
   use DAIA qw();       # do not export any functions
-  use DAIA qw(serve);  # only export function 'serve'
   use DAIA qw(:core);  # only export core functions
 
 You can select two groups, both are exported by default:
@@ -153,8 +151,8 @@ C<institution>, C<department>, C<storage>, C<limitation>
 
 =back
 
-Additional functions are C<message> as object constructor,
-and C<serve>. The other functions below are not exported by default.
+Additional functions is C<message> as object constructor.
+The other functions below are not exported by default.
 You can call them as method or as function, for instance:
 
   DAIA->parse_xml( $xml );
@@ -173,22 +171,6 @@ sub institution  { local $Carp::CarpLevel = $Carp::CarpLevel + 1; return DAIA::I
 sub department   { local $Carp::CarpLevel = $Carp::CarpLevel + 1; return DAIA::Department->new( @_ ) }
 sub storage      { local $Carp::CarpLevel = $Carp::CarpLevel + 1; return DAIA::Storage->new( @_ ) }
 sub limitation   { local $Carp::CarpLevel = $Carp::CarpLevel + 1; return DAIA::Limitation->new( @_ ) }
-
-=head2 serve( [ [ format => ] $format ] [ %options ] )
-
-Calls the method method C<serve> of L<DAIA::Response> or another DAIA object
-to serialize and send a response to STDOUT with appropriate HTTP headers. 
-You can call it this way:
-
-  serve( $response, @additionlArgs );  # as function
-  $response->serve( @additionlArgs );  # as method
-
-=cut
-
-sub serve {
-    local $Carp::CarpLevel = $Carp::CarpLevel + 1; 
-    shift->serve( @_ );
-}
 
 =head2 parse ( $from [ %parameters ] )
 
@@ -251,7 +233,7 @@ sub parse {
     }
     if ( $file ) {
         if ( $file =~ /^http(s)?:\/\// ) {
-            $from = get($file) or croak "Failed to fetch $file via HTTP"; 
+            $from = LWP::Simple::get($file) or croak "Failed to fetch $file via HTTP"; 
         } else {
             if ( ! (ref($file) eq 'GLOB' or UNIVERSAL::isa( $file, 'IO::Handle') ) ) {
                 $file = do { IO::File->new($file, '<:encoding(UTF-8)') or croak("Failed to open file $file") };
@@ -431,56 +413,6 @@ Adds typed properties.
 =head2 xml, struct, json, rdfhash
 
 Returns several serialization forms.
-
-=head2 serve ( [ [ format => ] $format | [ cgi => $CGI ] ] [ %more_options ] )
-
-Serialize the object and send it to STDOUT (or to another stream) with the 
-appropriate HTTP headers. This method is available for all DAIA objects but
-mostly used to serve a L<DAIA::Response>. The serialized object must already
-be encoded in UTF-8 (but it can contain Unicode strings).
-
-The serialization format can be specified with the first parameter as
-C<format> string (C<json> or C<xml>) or C<cgi> object. If no format is
-given, it is searched for in the L<CGI> query parameters. The default 
-format is C<xml>. Other possible options are:
-
-=over
-
-=item header
-
-Print HTTP headers (default). Use C<header =E<gt> 0> to disable headers.
-
-=head xmlheader
-
-Print the XML header of XML format is used. Enabled by default.
-
-=item xslt
-
-Add a link to the given XSLT stylesheet if XML format is used.
-
-=item pi
-
-Add one or more processing instructions if XML format is used.
-
-=item callback
-
-Add this JavaScript callback function in JSON format. If no callback
-function is specified, it is searched for in the CGI query parameters.
-You can disable callback support by setting C<callback =E<gt> undef>.
-
-=item to
-
-Serialize to a given stream (L<IO::Handle>, GLOB, or string reference)
-instead of STDOUT. You may also want to set C<exitif> if you use
-this option.
-
-=item exitif
-
-By setting this method to a true value you make it to exit the program.
-you provide a method, the method is called and the script exits if only
-if the return value is true.
-
-=back
 
 =cut
 

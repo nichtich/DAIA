@@ -5,7 +5,6 @@ package DAIA::Object;
 #VERSION
 
 use Carp::Clan;
-use CGI; # TODO: allow other kind of CGI
 use Data::Validate::URI qw(is_uri is_web_uri);
 use IO::Scalar;
 use Scalar::Util qw(refaddr reftype);
@@ -263,65 +262,6 @@ sub serialize {
     }
 
     return $content;
-}
-
-=head2 serve
-
-Serialize the object and send it to STDOUT with the appropriate HTTP headers.
-See L<DAIA/"DAIA OBJECTS"> for details. 
-
-This method is deprecated, please use L<Plack::App::DAIA> instead!
-
-=cut
-
-sub serve {
-    my $self = shift;
-    my $first = shift if @_ % 2;
-    my (%attr) = @_;
-    $self->_hidden_prop( \%attr );
-
-    if ( UNIVERSAL::isa( $first,'CGI' ) ) {
-        $attr{cgi} = $first;
-    } elsif (defined $first) {
-        $attr{format} = $first;
-    }
-    if (not exists $attr{'format'}) {
-        $attr{cgi} = CGI->new unless $attr{cgi};
-        $attr{format} = $attr{'cgi'}->param('format');
-    }
-    $attr{exitif} = 0 unless exists $attr{exitif};
-
-    my $format = lc($attr{format} || '');
-    my $header = defined $attr{header} ? $attr{header} : 1;
-    my $xslt = $attr{xslt};
-    my $pi = $attr{pi};
-    my $xmlheader = defined $attr{xmlheader} ? $attr{xmlheader} : 1;
-    my $to = $attr{to} || \*STDOUT;
-    if ( ref($to) eq 'SCALAR' ) {
-        $$to = "";
-        $to = IO::Scalar->new( $to );
-    }
-    #_enable_utf8_layer($to); # TODO: this does not work
-    if (! $attr{noutf8} ) {
-        eval{ binmode $to, ':encoding(UTF-8)'  };
-    }
-
-    # TODO: user serialize($format) instead
-    if ( defined $format and $format eq 'json' ) {
-        print $to CGI::header( '-type' => "application/javascript; charset=utf-8" ) if $header;
-        if (not exists $attr{callback}) {
-            $attr{cgi} = CGI->new unless $attr{cgi};
-            $attr{callback} = $attr{cgi}->param('callback');
-        }
-        print $to $self->json( $attr{callback} );
-    } else {
-        print $to CGI::header( -type => "application/xml; charset=utf-8" ) if $header;
-        my $xml = $self->xml( xmlns => 1, header => 1, xslt => $xslt, pi => $pi, header => $xmlheader );
-        print $to $xml."\n";
-    }
-
-    $attr{'exitif'} = $attr{'exitif'}() if ref($attr{'exitif'}) eq 'CODE';
-    exit if $attr{'exitif'};
 }
 
 =head2 rdfuri

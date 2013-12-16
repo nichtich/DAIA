@@ -1,8 +1,7 @@
-requires 'perl', '>= 5.10';
+requires 'perl', '5.10.0';
 requires 'Carp';
 requires 'LWP::Simple';
 requires 'Carp::Clan';
-requires 'CGI';
 requires 'Data::Validate::URI';
 requires 'DateTime';
 requires 'DateTime::Duration';

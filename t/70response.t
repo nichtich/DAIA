@@ -22,44 +22,4 @@ my $inst = institution( 'foo' );
 $daia->institution( $inst );
 is_deeply( $daia->institution, $inst );
 
-#### test method DAIA::Object::serve
-my $item = item();
-my $out;
-
-use CGI;
-my $cgi = new CGI;
-my %p = ( to => \$out, header => 0, exitif => sub { return 0; } );
-
-test_serve(
-  [ [], qr/<item/, 'default format is XML' ],
-  [ ['xml'], qr/<item/, 'serialized as XML' ],
-  [ [$cgi], qr/<item/, 'default format is XML' ],
-  [ ['format' => 'xml'], qr/<item/, 'serialized as XML' ],
-  [ ['json'], qr/{/, 'serialized as JSON' ],
-  [ ['format' => 'json'], qr/{/, 'serialized as JSON' ],
-);
-
-$cgi->param('format','json');
-test_serve( [ [$cgi], qr/^\s*{/, 'format set to JSON' ] );
-$cgi->param('callback','foo');
-test_serve( [ [$cgi], qr/^foo\(\s*{/, 'format set to JSON with callback' ] );
-test_serve( [ ['json', callback => 'bar'], qr/^bar\(\s*{/, 'format set to JSON with callback' ] );
-
-sub test_serve {
-    foreach my $test (@_) {
-        $out = "";
-        my @arg = @{$test->[0]};
-        push @arg, %p;
-        $item->serve( @arg );
-        like( $out, $test->[1], $test->[2] );
-        my $out1 = $out; $out = '';
-
-        unless ( @arg % 2 ) {
-            $item = item( @arg );
-            $item->serve;
-            is( $out, $out1, 'serve with hidden parameters' );
-        }
-    }
-}
-
 done_testing;
